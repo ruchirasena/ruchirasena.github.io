@@ -1,24 +1,14 @@
 ---
-title: "R Markdown and Leaflet"
+title: "A Map Using Leaflet"
 author: "Ruchira senanayake"
-date: "6/8/2020"
+date: "June 08,2020"
 output: html_document
 ---
 
-# Introduction
 
-In this project we are going to create a web page using R Markdown that features a map created with Leaflet.
 
-we will host our webpage on GitHub Pages.
 
-This page will contain the date that we created the document,a map created with Leaflet.
-
-Let's create the map.
-This map will show you some of the [towns in Sri Lanka](https://www.latlong.net/category/towns-210-55.html).
-
-***Loading the data***
-
-```{r, message=FALSE,warning=FALSE,comment=""}
+```{r, echo=FALSE, results='hide',message=FALSE,warning=FALSE,comment=""}
 # reading the data
 data <- read.csv("towns_srilanka.csv",header = TRUE)
 
@@ -30,9 +20,7 @@ names(data)
 head(data)
 ```
 
-***Creating the map using Leaflet***
-
-```{r, message=FALSE,warning=FALSE,comment=""}
+```{r, echo=FALSE, message=FALSE,warning=FALSE,comment=""}
 # loading the package leaflet
 library(leaflet)
 
@@ -49,9 +37,9 @@ map <- towns %>%
   
 # calling the map
 map
-  
 ```
 
+***This map shows some of the towns in Sri Lanka***
 
 
 
