@@ -1,0 +1,54 @@
+---
+title: "Shiny Application and Reproducible Pitch"
+author: "Ruchira senanayake"
+date: "6/9/2020"
+output: ioslides_presentation
+---
+
+## INTRODUCTION
+
+This is the second part of the peer assessed assignment that had two parts. 
+
+First, we created a Shiny application that can be used to predict the child's height based on child's gender and heights of child's parents and deploy it on Rstudio's servers
+
+Now, we are going to use Rstudio Presenter to prepare a reproducible pitch presentation about our application.
+
+## HEIGHT PREDICTION APPLICATION
+
+1.The purpose of our application was to predict the childs' height based on childs' gender and childs' parents' height.
+
+2.We used the ***GaltonFamilies*** dataset for the creation of this application.
+
+3.Using the ***GaltonFamilies*** dataset we fit a linear regression model to predict the childs' height.
+
+4.Our target variable was the ***childHeight*** and predictors were ***father,mother and  gender***.
+
+5.Then,using the results of the linear model we created our **HEIGHT PREDICTION APPLICATION**.
+
+## 3D PLOT OF CHILD'S HEIGHT AND PARENTS' HEIGHTS
+
+```{r,message=FALSE,warning=FALSE,comment="",echo=FALSE}
+library(HistData)
+data(GaltonFamilies)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+# converting inches to centimeters
+galton <- GaltonFamilies
+galton <- galton %>% mutate(father=father*2.54,
+                    mother=mother*2.54,
+                    childHeight=childHeight*2.54)
+
+plot3D <- plot_ly(galton, x = ~father, y = ~mother, z = ~childHeight,
+                  color = ~childHeight, size = ~childHeight, 
+                  text = ~paste("Gender: ",gender )) 
+plot3D
+```
+
+## USING THE APPLICATION
+
+To predict the childs' height just adjust the height bars of parents and select the gender of the child.
+
+Go to the app :[HEIGHT PREDICTION APPLICATION](http://ruchirasena.shinyapps.io/ChildHeightPrediction?_ga=2.163384444.1300812286.1591680481-293551268.1591680481)
+
+GitHub Repo :
