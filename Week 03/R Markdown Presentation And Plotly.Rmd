@@ -1,13 +1,17 @@
 ---
 title: "R Markdown Presentation And Plotly"
 author: "Ruchira senanayake"
-date: "6/8/2020"
+date: "June 8,2020"
 output: ioslides_presentation
 ---
 
 ## Introduction
 
+**DATE:June 8,2020**
+
 We are going to reate a web page presentation using R Markdown that features a plot created with Plotly. We will host our webpage on either GitHub Pages. Our webpage will contain the date that we created the document, and a plot created with Plotly.
+
+***Note : We will use the diamond dataset for this task*** 
 
 Lets move on....
 
@@ -16,8 +20,9 @@ Lets move on....
 If you haven't install the **plotly** package install it by using the command `install.packages("plotly")`.
 
 ```{r, warning=FALSE, message=FALSE, comment=""}
+# loading the plotly package
+library(plotly) 
 
-library(plotly) # loading the plotly package
 # loading the diamond dataset and assign it to variable data
 data <- diamonds[sample(nrow(diamonds), 2500), 
                  c("carat", "price", "clarity", "depth")]
@@ -26,10 +31,17 @@ data <- diamonds[sample(nrow(diamonds), 2500),
 ## Examine the Diamond Dataset
 
 ```{r, warning=FALSE, message=FALSE, comment=""}
-dim(data) # checking the dimensions of the dataset
-names(data) # checking the variable names in the dataset
-summary(data) # examine the descriptive statistics 
+# checking the dimensions of the dataset
+dim(data) 
+# checking the variable names in the dataset
+names(data)
+```
 
+## Examine the Diamond Dataset
+
+```{r, warning=FALSE, message=FALSE, comment=""}
+# examine the descriptive statistics 
+summary(data) 
 ```
 
 ## Creating 2D and 3D Scatter Plots
@@ -58,4 +70,6 @@ plot2D
 # calling the 3D plot
 plot3D
 ```
+
+## THANK YOU!
 
