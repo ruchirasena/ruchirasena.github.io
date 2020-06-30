@@ -32,7 +32,7 @@ ui <- fluidPage(
             h5("4. A question mark means no prediction, typically due to mis-spelling"),
             h5("5. Additional tabs show plots of the top ngrams in the dataset"),
             br(),
-            a("Source Code", href = "https://github.com/ruchirasena/JHU-Data-Science-Capstone")
+            a("Source Code", href = "https://github.com/ruchirasena/ruchirasena.github.io/tree/master/Task6-Data_Product")
         ),
         
         # Show a plot of the generated distribution
@@ -40,21 +40,22 @@ ui <- fluidPage(
             tabsetPanel(
                 tabPanel("predict",
                          textInput("user_input", h3("Your Input:"), 
-                                   value = "Your words"),
-                         h3("Predicted Next Word:"),
-                         h4(em(span(textOutput("ngram_output"), style="color:blue")))),
+                                   value = "Enter Your Word Here"),
+                         tabPanel("Predict Next Word",
+                                  br(),
+                                  h4(em(span(textOutput("ngram_output"), style="color:blue")))),
                 
                 tabPanel("top quadgrams",
                          br(),
-                         img(src = "PNG/quadgrams.png")),
+                         img(src = "quadgrams.png", height = 500, width = 700)),
                 
                 tabPanel("top trigrams",
                          br(),       
-                         img(src = "PNG/trigrams.png", height = 500, width = 700)),
+                         img(src = "trigrams.png", height = 500, width = 700)),
                 
                 tabPanel("top bigrams",
                          br(),
-                         img(src = "PNG/bigrams.png", height = 500, width = 700))
+                         img(src = "bigrams.png", height = 500, width = 700))
             )   
         )
     )
