@@ -20,7 +20,7 @@ ui <- fluidPage(
     
     # Application title
     titlePanel("Text Prediction Model"),
-    p("This app that takes an input phrase (multiple words) in a text box and outputs a prediction of the next word."),
+    p("This app that takes an input phrase in a text box and outputs a prediction of the next word."),
     
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
@@ -41,9 +41,8 @@ ui <- fluidPage(
                 tabPanel("predict",
                          textInput("user_input", h3("Your Input:"), 
                                    value = "Enter Your Word Here"),
-                         tabPanel("Predict Next Word",
-                                  br(),
-                                  h4(em(span(textOutput("ngram_output"), style="color:blue")))),
+                         h3("Predicted Next Word:"),
+                         h3(em(span(textOutput("ngram_output"), style="color:blue")))),
                 
                 tabPanel("top quadgrams",
                          br(),
