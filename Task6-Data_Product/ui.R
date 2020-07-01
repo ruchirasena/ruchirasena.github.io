@@ -38,23 +38,25 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             tabsetPanel(
-                tabPanel("predict",
+                tabPanel("Predict Next Word",
                          textInput("user_input", h3("Your Input:"), 
                                    value = "Enter Your Word Here"),
-                         h3("Predicted Next Word:"),
-                         h3(em(span(textOutput("ngram_output"), style="color:blue")))),
-                
-                tabPanel("top quadgrams",
                          br(),
-                         img(src = "quadgrams.png", height = 500, width = 700)),
+                         actionButton("click","Predict Next Word"),
+                         h3(span(textOutput("ngram_output"), style="color:black"))),
                 
-                tabPanel("top trigrams",
+                tabPanel("Top Bigrams",
+                         br(),
+                         img(src = "bigrams.png", height = 800, width = 1000)),
+                
+                tabPanel("Top Trigrams",
                          br(),       
-                         img(src = "trigrams.png", height = 500, width = 700)),
+                         img(src = "trigrams.png", height = 800, width = 1000)),
                 
-                tabPanel("top bigrams",
+                tabPanel("Top Quadgrams",
                          br(),
-                         img(src = "bigrams.png", height = 500, width = 700))
+                         img(src = "quadgrams.png", height = 800, width = 1000))
+                
             )   
         )
     )

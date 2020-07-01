@@ -12,8 +12,12 @@ library(shiny)
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     
-    output$ngram_output <- renderText({
+    ngram_output <- eventReactive(input$click, {
         ngrams(input$user_input)
+    })
+    
+    output$ngram_output <- renderText({
+        ngram_output()
     })
     
 }
