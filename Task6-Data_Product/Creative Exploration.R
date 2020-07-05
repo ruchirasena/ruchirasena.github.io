@@ -11,6 +11,8 @@ suppressPackageStartupMessages({
 bi_words <- readRDS("Words/bi_words_fast.rds")
 tri_words  <- readRDS("Words/tri_words_fast.rds")
 quad_words <- readRDS("Words/quad_words_fast.rds")
+quint_words <- readRDS("Words/quint_words_fast.rds")
+sext_words <- readRDS("Words/sext_words_fast.rds")
 
 # Create Ngram Matching Functions
 
@@ -50,6 +52,35 @@ quadgram <- function(input_words){
   ifelse(out=="character(0)", trigram(input_words), return(out))
 }
 
+quintgram <- function(input_words){
+  num <- length(input_words)
+  filter(quint_words, 
+         word1==input_words[num-3], 
+         word2==input_words[num-2], 
+         word3==input_words[num-1],
+         word4==input_words[num])  %>% 
+    top_n(1, n) %>%
+    filter(row_number() == 1L) %>%
+    select(num_range("word", 5)) %>%
+    as.character() -> out
+  ifelse(out=="character(0)", quadgram(input_words), return(out))
+}
+
+sextgram <- function(input_words){
+  num <- length(input_words)
+  filter(sext_words, 
+         word1==input_words[num-4], 
+         word2==input_words[num-3], 
+         word3==input_words[num-2],
+         word4==input_words[num-1],
+         word5==input_words[num])  %>% 
+    top_n(1, n) %>%
+    filter(row_number() == 1L) %>%
+    select(num_range("word", 6)) %>%
+    as.character() -> out
+  ifelse(out=="character(0)", quintgram(input_words), return(out))
+}
+
 # Create User Input and Data Cleaning Function; Calls the matching functions
 
 ngrams <- function(input){
@@ -65,7 +96,9 @@ ngrams <- function(input){
   input_words <- tolower(input_words)
   # Call the matching functions
   out <- ifelse(input_count == 1, bigram(input_words), 
-                ifelse (input_count == 2, trigram(input_words), quadgram(input_words)))
+                ifelse (input_count == 2, trigram(input_words), 
+                        ifelse(input_count == 3, quadgram(input_words),
+                               ifelse(input_count == 4, quintgram(input_words), sextgram(input_words)))))
   # Output
   return(out)
 }

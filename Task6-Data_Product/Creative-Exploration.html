@@ -394,9 +394,14 @@ library(tidyr)</code></pre>
 <div id="loading-the-data" class="section level2">
 <h2>Loading The Data</h2>
 <pre class="r"><code># Reading the data files
-blogs &lt;- readLines(&quot;en_US.blogs.txt&quot;)
-news &lt;- readLines(&quot;en_US.news.txt&quot;)
-twitter &lt;- readLines(&quot;en_US.twitter.txt&quot;)
+blogs &lt;- readLines(&quot;en_US.blogs.txt&quot;, skipNul = TRUE, encoding=&quot;UTF-8&quot;)
+news &lt;- readLines(&quot;en_US.news.txt&quot;, skipNul = TRUE, encoding=&quot;UTF-8&quot;)
+twitter &lt;- readLines(&quot;en_US.twitter.txt&quot;, skipNul = TRUE, encoding=&quot;UTF-8&quot;)
+
+# Removing Non English Words
+blogs &lt;- iconv(blogs,&quot;latin1&quot;,&quot;ASCII&quot;,sub=&quot;&quot;)
+news &lt;- iconv(news,&quot;latin1&quot;,&quot;ASCII&quot;,sub=&quot;&quot;)
+twitter &lt;- iconv(twitter,&quot;latin1&quot;,&quot;ASCII&quot;,sub=&quot;&quot;)
 
 # Creating Dataframes
 blogs   &lt;- data_frame(text = blogs)
@@ -405,7 +410,7 @@ twitter &lt;- data_frame(text = twitter)</code></pre>
 <div id="sampling-the-data" class="section level3">
 <h3>Sampling The Data</h3>
 <pre class="r"><code>set.seed(1001)
-sample_pct &lt;- 0.10
+sample_pct &lt;- 0.15
 
 blogs_sample &lt;- blogs %&gt;%
   sample_n(., nrow(blogs)*sample_pct)
@@ -571,6 +576,35 @@ quadgram &lt;- function(input_words){
                     select(num_range(&quot;word&quot;, 4)) %&gt;%
                     as.character() -&gt; out
                     ifelse(out==&quot;character(0)&quot;, trigram(input_words), return(out))
+}
+
+quintgram &lt;- function(input_words){
+  num &lt;- length(input_words)
+  filter(quint_words, 
+         word1==input_words[num-3], 
+         word2==input_words[num-2], 
+         word3==input_words[num-1],
+         word4==input_words[num])  %&gt;% 
+    top_n(1, n) %&gt;%
+    filter(row_number() == 1L) %&gt;%
+    select(num_range(&quot;word&quot;, 5)) %&gt;%
+    as.character() -&gt; out
+  ifelse(out==&quot;character(0)&quot;, quadgram(input_words), return(out))
+}
+
+sextgram &lt;- function(input_words){
+  num &lt;- length(input_words)
+  filter(sext_words, 
+         word1==input_words[num-4], 
+         word2==input_words[num-3], 
+         word3==input_words[num-2],
+         word4==input_words[num-1],
+         word5==input_words[num])  %&gt;% 
+    top_n(1, n) %&gt;%
+    filter(row_number() == 1L) %&gt;%
+    select(num_range(&quot;word&quot;, 6)) %&gt;%
+    as.character() -&gt; out
+  ifelse(out==&quot;character(0)&quot;, quintgram(input_words), return(out))
 }</code></pre>
 </div>
 <div id="creating-the-user-input-and-data-cleaning-function" class="section level2">
@@ -588,7 +622,9 @@ quadgram &lt;- function(input_words){
   input_words &lt;- tolower(input_words)
   # Call the matching functions
   out &lt;- ifelse(input_count == 1, bigram(input_words), 
-              ifelse (input_count == 2, trigram(input_words), quadgram(input_words)))
+                ifelse (input_count == 2, trigram(input_words), 
+                        ifelse(input_count == 3, quadgram(input_words),
+                               ifelse(input_count == 4, quintgram(input_words), sextgram(input_words)))))
   # Output
   return(out)
 }</code></pre>

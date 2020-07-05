@@ -43,9 +43,14 @@ library(tidyr)
 
 ```{r load data, warning=FALSE, message=FALSE, eval=FALSE, comment=""}
 # Reading the data files
-blogs <- readLines("en_US.blogs.txt")
-news <- readLines("en_US.news.txt")
-twitter <- readLines("en_US.twitter.txt")
+blogs <- readLines("en_US.blogs.txt", skipNul = TRUE, encoding="UTF-8")
+news <- readLines("en_US.news.txt", skipNul = TRUE, encoding="UTF-8")
+twitter <- readLines("en_US.twitter.txt", skipNul = TRUE, encoding="UTF-8")
+
+# Removing Non English Words
+blogs <- iconv(blogs,"latin1","ASCII",sub="")
+news <- iconv(news,"latin1","ASCII",sub="")
+twitter <- iconv(twitter,"latin1","ASCII",sub="")
 
 # Creating Dataframes
 blogs   <- data_frame(text = blogs)
@@ -57,7 +62,7 @@ twitter <- data_frame(text = twitter)
 
 ```{r sampling, warning=FALSE, message=FALSE, eval=FALSE, comment=""}
 set.seed(1001)
-sample_pct <- 0.10
+sample_pct <- 0.15
 
 blogs_sample <- blogs %>%
   sample_n(., nrow(blogs)*sample_pct)
@@ -238,6 +243,35 @@ quadgram <- function(input_words){
                     as.character() -> out
                     ifelse(out=="character(0)", trigram(input_words), return(out))
 }
+
+quintgram <- function(input_words){
+  num <- length(input_words)
+  filter(quint_words, 
+         word1==input_words[num-3], 
+         word2==input_words[num-2], 
+         word3==input_words[num-1],
+         word4==input_words[num])  %>% 
+    top_n(1, n) %>%
+    filter(row_number() == 1L) %>%
+    select(num_range("word", 5)) %>%
+    as.character() -> out
+  ifelse(out=="character(0)", quadgram(input_words), return(out))
+}
+
+sextgram <- function(input_words){
+  num <- length(input_words)
+  filter(sext_words, 
+         word1==input_words[num-4], 
+         word2==input_words[num-3], 
+         word3==input_words[num-2],
+         word4==input_words[num-1],
+         word5==input_words[num])  %>% 
+    top_n(1, n) %>%
+    filter(row_number() == 1L) %>%
+    select(num_range("word", 6)) %>%
+    as.character() -> out
+  ifelse(out=="character(0)", quintgram(input_words), return(out))
+}
 ```
 
 ## Creating The User Input And Data Cleaning Function
@@ -256,7 +290,9 @@ ngrams <- function(input){
   input_words <- tolower(input_words)
   # Call the matching functions
   out <- ifelse(input_count == 1, bigram(input_words), 
-              ifelse (input_count == 2, trigram(input_words), quadgram(input_words)))
+                ifelse (input_count == 2, trigram(input_words), 
+                        ifelse(input_count == 3, quadgram(input_words),
+                               ifelse(input_count == 4, quintgram(input_words), sextgram(input_words)))))
   # Output
   return(out)
 }
